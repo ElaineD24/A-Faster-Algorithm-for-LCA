@@ -24,16 +24,6 @@ struct Node {
 	}
 };
 
-/* Function to insert new nodes to the tree. */
-// struct node *newnode(int data) {
-//     struct node *node;
-//     node = (struct node*)malloc(sizeof(struct node));
-//     node->data = data;
-//     node->left = NULL;
-//     node->right = NULL;
-//     return node;
-// }
-
 void insert(Node *root, int data);
 void traversal(Node *root);
 
