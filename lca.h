@@ -56,6 +56,7 @@ int get_lca(struct lca* lca, int u, int v);
 double random(int range_to);
 struct Node* generate(int N);
 struct Node* generate_skewed_right(int N);
+struct Node* insertRight(vector<int> arr, Node* root, int i, int n);
 struct Node* generate_n_nodes_tree(int N);
 struct Node* insertLevelOrder(vector<int> arr, Node* root, int i, int n);
 int maxDepth(Node* node);

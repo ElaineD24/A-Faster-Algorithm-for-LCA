@@ -24,7 +24,7 @@ struct Node {
 	}
 };
 
-void insert(Node *root, int data);
-void traversal(Node *root);
+// void insert(Node *root, int data);
+// void traversal(Node *root);
 
 #endif

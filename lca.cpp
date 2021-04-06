@@ -269,33 +269,28 @@ struct Node* generate(int N) {
 }
 
 struct Node* generate_skewed_right(int N) {
-    vector<int> links(2*N + 1);
-    for (int k = 1; k < 2*N; k+=2){
-        int x = random(k);
-        default_random_engine generator;
-        bernoulli_distribution distribution(0.5);
-        if (distribution(generator)){ 
-            links[k] = k+1; 
-            links[k+1] = links[x]; 
-        } else { 
-            links[k] = links[x]; 
-            links[k+1] = k+1; 
-        }
-        links[x] = k;
+    vector<int> links(N+1);
+    for (int k = 0; k < N; k++){
+        links[k] = k;
     }
-
-    vector<Node*> nodes(2*N + 1);
-    for (int k = 0; k < 2*N + 1; k+=2) 
-        nodes[k] = new Node(links[k]);
-    for (int k = 1; k < 2*N + 1; k+=2) 
-        nodes[k] = new Node(links[k]);
-    struct Node* root = nodes[0];
-    for (int k = 0; k < 2*N; k+=2) {
-        nodes[k]->left = nodes[k+1];
-        nodes[k]->right = nodes[k+2];
-    }
+    struct Node* root = new Node(0);
+    struct Node* root_r = insertRight(links, root_r, 2, N-2); 
+    root->right = root_r;
     return root;
 }
+
+struct Node* insertRight(vector<int> arr, Node* root, int i, int n) { 
+    // Base case for recursion 
+    if (i < n) { 
+        struct Node* temp = new Node(arr[i]); 
+        root = temp; 
+
+        // insert right child 
+        root->right = insertRight(arr, 
+                  root->right, i + 1, n); 
+    } 
+    return root; 
+} 
 
 struct Node* generate_n_nodes_tree(int N){
     vector<int> links(N+1);
@@ -433,6 +428,7 @@ void test_right_skewed(struct lca* lca, int k){
     
     // lca->preprocessing_start = clock();
     precompute_lca(lca, root);
+    cout << "aaa";
     lca->preprocessing_duration = (clock() - lca->preprocessing_start ) / (double) CLOCKS_PER_SEC;
     cout << "Preprossing took: " << lca->preprocessing_duration << " s" << endl;
 
