@@ -71,18 +71,6 @@ void build_sparse_table(struct lca* lca, int euler_size){
                 lca->st[l][i] = min_by_height(lca, lca->st[l-1][i], lca->st[l-1][ni]);
         }
     }
-
-    // cout << "Sparse Table: " << endl;
-    // // print sparse table
-    // for (int i = 0; i < st.size(); ++i) {
-    //     for (int j = 0; j < st[0].size(); ++j) {
-    //         cout << st[i][j] << ' ';
-    //     }
-    //     cout << endl;
-    // }    
-    // cout << endl;
-
-    
 }
 
 void compute_all_block_binary_nums(struct lca* lca, int euler_size){
@@ -95,14 +83,6 @@ void compute_all_block_binary_nums(struct lca* lca, int euler_size){
         if (j > 0 && (min_by_height(lca, i - 1, i) == i - 1))
             lca->block_bit[b] += 1 << (j - 1);
     }
-
-    // cout << "Block Bit array: " << endl;
-    // // print sparse table
-    // for (int i = 0; i < block_bit.size(); ++i) {
-    //     cout << block_bit[i] << ' ';
-    // }    
-    // cout << endl;
-
 }
 
 // precompute RMQ for each unique block
@@ -134,7 +114,6 @@ void compute_all_combinations(struct lca* lca, int euler_size){
             }
         }
     }
-    // cout << "yessssss" << endl;
 }
 
 void build_log_array(struct lca* lca){
@@ -146,13 +125,6 @@ void build_log_array(struct lca* lca){
     for (int i = 1; i <= m; i++) {
         lca->array_log.push_back(lca->array_log[i / 2] + 1);
     }
-
-    // print out array log
-    // cout << "Array log: " << endl;
-    // for (int j = 0; j < array_log.size(); ++j) {
-    //     cout << array_log[j] << ' ';
-    // }
-    // cout << endl << endl;
 }
 
 void precompute_lca(struct lca* lca, struct Node* root) {
@@ -169,10 +141,7 @@ void precompute_lca(struct lca* lca, struct Node* root) {
     // calculate block size and total number of blocks via log array
     lca->block_size = max(1, lca->array_log[m] / 2);
     lca->block_cnt = (m + lca->block_size - 1) / lca->block_size;
-    // cout << "block size: " << block_size << endl;
-    // cout << "block count: " << block_cnt << endl;
 
-    // cout << endl;
     // build up sparse table for 2n/logn (# of blocks) total numbers 
     build_sparse_table(lca, m);
     compute_all_block_binary_nums(lca, m);
@@ -213,17 +182,14 @@ int get_lca(struct lca* lca, int u, int v) {
         // compute log of (number of blocks between block_l and block_r), exclusively
         // to compute which row we should use to look up in sparse table
         int b = lca->array_log[block_r - block_l - 1];
-        // cout << "b: " << b << endl;
 
         // look up in the sparse table and get the min among the blocks starting from block_l + 1
         // to 2^(b-1) more blocks
         int min1_blocks = lca->st[b][block_l+1];
-        // cout << "min1_block: " << min1_blocks << endl;
 
         // look up in the sparse table and get the min among the blocks starting from block_r - 2^b
         // to 2^(b-1) more blocks
         int min2_blocks = lca->st[b][block_r - (1 << b)];
-        // cout << "min2_block: " << min2_blocks << endl;
        
         ans = min_by_height(lca, ans, min_by_height(lca, min1_blocks, min2_blocks));
 
@@ -328,11 +294,11 @@ int maxDepth(Node* node) {
     if (node == NULL) 
         return -1; 
     else{ 
-        /* compute the depth of each subtree */
+        // compute the depth of each subtree
         int lDepth = maxDepth(node->left); 
         int rDepth = maxDepth(node->right); 
      
-        /* use the larger one */
+        // use the larger one
         if (lDepth > rDepth) 
             return(lDepth + 1); 
         else return(rDepth + 1); 
@@ -343,9 +309,7 @@ int maxDepth(Node* node) {
 void test_1(struct lca* lca, int k){
     struct Node* root = generate(k);
     lca->tree_depth = maxDepth(root);
-    // printEulerTour(lca, root);  
 
-    // lca->preprocessing_start = clock();
     precompute_lca(lca, root);
     lca->preprocessing_duration = (clock() - lca->preprocessing_start ) / (double) CLOCKS_PER_SEC;
     cout << "Preprossing took: " << lca->preprocessing_duration << " s" << endl;
@@ -355,7 +319,6 @@ void test_1(struct lca* lca, int k){
     struct Node* node_v = root->left;
 
     // get a node from root->left subtree
-
     for(int i = 0; i < 10; i++){
         if (node_u->left)
             node_u = node_u->left;
@@ -392,7 +355,6 @@ void test_2(struct lca* lca, int k){
     struct Node* root = generate(k);
     lca->tree_depth = maxDepth(root);
 
-    // lca->preprocessing_start = clock();
     precompute_lca(lca, root);
     lca->preprocessing_duration = (clock() - lca->preprocessing_start ) / (double) CLOCKS_PER_SEC;
     cout << "Preprossing took: " << lca->preprocessing_duration << " s" << endl;
@@ -426,9 +388,7 @@ void test_2(struct lca* lca, int k){
 void test_right_skewed(struct lca* lca, int k){
     struct Node* root = generate_skewed_right(k);
     
-    // lca->preprocessing_start = clock();
     precompute_lca(lca, root);
-    cout << "aaa";
     lca->preprocessing_duration = (clock() - lca->preprocessing_start ) / (double) CLOCKS_PER_SEC;
     cout << "Preprossing took: " << lca->preprocessing_duration << " s" << endl;
 
