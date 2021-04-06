@@ -159,6 +159,7 @@ void precompute_lca(struct lca* lca, struct Node* root) {
     // Stores Euler Tour 
     lca->first_visit.assign(lca->MAX, -1);  
 
+    lca->preprocessing_start = clock();
     eulerTree(lca, root, 0); 
 
     int m = lca->euler_tour.size();
@@ -237,6 +238,7 @@ double random(int range_to) {
     return distr(generator);
 }
 
+// slide
 struct Node* generate(int N) {
     vector<int> links(2*N + 1);
     for (int k = 1; k < 2*N; k+=2){
@@ -327,11 +329,32 @@ struct Node* insertLevelOrder(vector<int> arr, Node* root, int i, int n) {
     return root; 
 } 
 
+int maxDepth(Node* node) { 
+    if (node == NULL) 
+        return -1; 
+    else{ 
+        /* compute the depth of each subtree */
+        int lDepth = maxDepth(node->left); 
+        int rDepth = maxDepth(node->right); 
+     
+        /* use the larger one */
+        if (lDepth > rDepth) 
+            return(lDepth + 1); 
+        else return(rDepth + 1); 
+    } 
+} 
+
 // select two nodes in left subtree and right subtree of node root->left, should return root->left
 void test_1(struct lca* lca, int k){
     struct Node* root = generate(k);
+    lca->tree_depth = maxDepth(root);
     // printEulerTour(lca, root);  
+
+    // lca->preprocessing_start = clock();
     precompute_lca(lca, root);
+    lca->preprocessing_duration = (clock() - lca->preprocessing_start ) / (double) CLOCKS_PER_SEC;
+    cout << "Preprossing took: " << lca->preprocessing_duration << " s" << endl;
+    cout << "Tree height: " << lca->tree_depth << endl;
 
     struct Node* node_u = root->left;
     struct Node* node_v = root->left;
@@ -362,19 +385,23 @@ void test_1(struct lca* lca, int k){
             break;
     }
 
-    lca->start = clock();
+    lca->getting_start = clock();
     int result = get_lca(lca, node_u->data, node_v->data);
-    lca->duration = (clock() - lca->start ) / (double) CLOCKS_PER_SEC;
+    lca->getting_duration = (clock() - lca->getting_start ) / (double) CLOCKS_PER_SEC;
 
-    cout << "Result should be: " << root->left->data << " Actual result is: "<< result << " Getting the result took: " << lca->duration << " s" << endl << endl;
+    cout << "Result should be: " << root->left->data << " Actual result is: "<< result << " Getting the result took: " << lca->getting_duration << " s" << endl << endl;
 }
 
 // select one node in the subtree of root->left, should return root->left
 void test_2(struct lca* lca, int k){
     struct Node* root = generate(k);
+    lca->tree_depth = maxDepth(root);
 
-    // printEulerTour(lca, root);  
+    // lca->preprocessing_start = clock();
     precompute_lca(lca, root);
+    lca->preprocessing_duration = (clock() - lca->preprocessing_start ) / (double) CLOCKS_PER_SEC;
+    cout << "Preprossing took: " << lca->preprocessing_duration << " s" << endl;
+    cout << "Tree height: " << lca->tree_depth << endl;
 
     struct Node* node_u = root->left;
     struct Node* node_v = root->left;
@@ -393,18 +420,21 @@ void test_2(struct lca* lca, int k){
             break;
     }
 
-    lca->start = clock();
+    lca->getting_start = clock();
     int result = get_lca(lca, node_u->data, node_v->data);
-    lca->duration = (clock() - lca->start ) / (double) CLOCKS_PER_SEC;
+    lca->getting_duration = (clock() - lca->getting_start ) / (double) CLOCKS_PER_SEC;
 
-    cout << "Result should be: " << node_u->data << " Actual result is: "<< result << " Getting the result took: " << lca->duration << " s" << endl << endl;
+    cout << "Result should be: " << node_u->data << " Actual result is: "<< result << " Getting the result took: " << lca->getting_duration << " s" << endl << endl;
 }
 
 // select one node in the subtree of root->left, should return root->left
 void test_right_skewed(struct lca* lca, int k){
     struct Node* root = generate_skewed_right(k);
-    // printEulerTour(lca, root);  
+    
+    // lca->preprocessing_start = clock();
     precompute_lca(lca, root);
+    lca->preprocessing_duration = (clock() - lca->preprocessing_start ) / (double) CLOCKS_PER_SEC;
+    cout << "Preprossing took: " << lca->preprocessing_duration << " s" << endl;
 
     struct Node* node_u = root->right;
     struct Node* node_v = root->right;
@@ -417,20 +447,29 @@ void test_right_skewed(struct lca* lca, int k){
             break;
     }
 
-    lca->start = clock();
+    lca->getting_start = clock();
     
     int result = get_lca(lca, node_u->data, node_v->data);
-    lca->duration = (clock() - lca->start ) / (double) CLOCKS_PER_SEC;
+    lca->getting_duration = (clock() - lca->getting_start ) / (double) CLOCKS_PER_SEC;
 
-    cout << "Result should be: " << node_u->data << " Actual result is: "<< result << " Getting the result took: " << lca->duration << " s" << endl << endl;
+    cout << "Result should be: " << node_u->data << " Actual result is: "<< result << " Getting the result took: " << lca->getting_duration << " s" << endl << endl;
 }
 
 // select two nodes in left subtree and right subtree of node root->left, should return root->left
 void test_balanced_btree(struct lca* lca, int k){
+    int start = clock();
     struct Node* root = generate_n_nodes_tree(k);
+    lca->tree_depth = maxDepth(root);
+
+    double du = (clock() - start ) / (double) CLOCKS_PER_SEC;
+    cout << "Generating a tree took: " << du << " s" << endl;
     cout << "Root: " << root->data << endl;
 
+    // lca->preprocessing_start = clock();
     precompute_lca(lca, root);
+    lca->preprocessing_duration = (clock() - lca->preprocessing_start ) / (double) CLOCKS_PER_SEC;
+    cout << "Preprossing took: " << lca->preprocessing_duration << " s" << endl;
+    cout << "Tree height: " << lca->tree_depth << endl;
 
     struct Node* node_u = root->left;
     struct Node* node_v = root->left;
@@ -461,10 +500,10 @@ void test_balanced_btree(struct lca* lca, int k){
 
     cout << "Node_u: " << node_u->data << endl;
     cout << "Node_v: " << node_v->data << endl;
-    lca->start = clock();
+    lca->getting_start = clock();
     int result = get_lca(lca, node_u->data, node_v->data);
-    lca->duration = (clock() - lca->start ) / (double) CLOCKS_PER_SEC;
+    lca->getting_duration = (clock() - lca->getting_start ) / (double) CLOCKS_PER_SEC;
 
-    cout << "Result should be: " << root->left->data << " Actual result is: "<< result << " Getting the result took: " << lca->duration << " s" << endl << endl;
+    cout << "Result should be: " << root->left->data << " Actual result is: "<< result << " Getting the result took: " << lca->getting_duration << " s" << endl << endl;
 }
 

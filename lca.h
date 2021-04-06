@@ -13,7 +13,7 @@ struct lca {
     vector<int> height;
     vector<int> first_visit; 
     int block_size, block_cnt;
-    int MAX = 1000000;
+    int MAX = 10000000;
     vector<int> euler_tour;
     vector<int> array_log;
     vector<vector<int> > st;
@@ -21,13 +21,16 @@ struct lca {
     vector<int> array_C;
     vector<vector<vector<int> > > blocks;
     vector<int> block_bit;
-    clock_t start;
-    double duration;
+    clock_t preprocessing_start;
+    double preprocessing_duration;
+    clock_t getting_start;
+    double getting_duration;
+    int tree_depth;
     lca(){
-		vector<int> height;
+		  vector<int> height;
         vector<int> first_visit; 
         int block_size, block_cnt;
-        int MAX = 10000000;
+        int MAX = 100000000;
         vector<int> euler_tour;
         vector<int> array_log;
         vector<vector<int> > st;
@@ -35,8 +38,9 @@ struct lca {
         vector<int> array_C;
         vector<vector<vector<int> > > blocks;
         vector<int> block_bit;
-        clock_t start;
-        double duration;
+        clock_t getting_start;
+        double getting_duration;
+        int tree_depth;
 	}
 };
 
@@ -54,6 +58,7 @@ struct Node* generate(int N);
 struct Node* generate_skewed_right(int N);
 struct Node* generate_n_nodes_tree(int N);
 struct Node* insertLevelOrder(vector<int> arr, Node* root, int i, int n);
+int maxDepth(Node* node);
 void test_1(struct lca* lca, int k);
 void test_2(struct lca* lca, int k);
 void test_right_skewed(struct lca* lca, int k);
